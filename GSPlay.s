@@ -25,10 +25,10 @@ gsIniPlay:
 	sta GameStateData+2
 
 	_set16im($0000, Camera.YScroll)
-	_set16im($0000, Camera.CamVelY)
+	_set16im($ffff, Camera.CamVelY)
 
 	_set16im($0000, Camera.XScroll)
-	_set16im($0002, Camera.CamVelX)
+	_set16im($0000, Camera.CamVelX)
 
 	jsr InitObjData
 
@@ -66,30 +66,8 @@ gsUpdPlay:
 	lbne donemove
 
 	_add16(Camera.XScroll, Camera.CamVelX, Camera.XScroll)
-	_and16im(Camera.XScroll, $1ff, Camera.XScroll)
 	_add16(Camera.YScroll, Camera.CamVelY, Camera.YScroll)
 
-	// Min Y bounds
-	lda Camera.YScroll+1
-	bpl !+
-
-	_set16im($0000, Camera.YScroll)
-	_set16im($0001, Camera.CamVelY)
-
-!:
-
-	// Max Y bounds
-	sec
-	lda Camera.YScroll+0
-	sbc #<MAXYBOUNDS
-	lda Camera.YScroll+1
-	sbc #>MAXYBOUNDS
-	bmi !+
-
-	_set16im(MAXYBOUNDS, Camera.YScroll)
-	_set16im($ffff, Camera.CamVelY)
-
-!:
 
 donemove:
 
@@ -151,7 +129,7 @@ UpdateObjData:
 //
 DrawObjData:
 {
-	_set16im(sprite32x32Chars.baseChar, DrawBaseChr)			// Start charIndx with first pixie char
+	_set16im(sprite48x48Chars.baseChar, DrawBaseChr)			// Start charIndx with first pixie char
 
 	_set8im((PAL_SPR << 4) | $0f, DrawPal)
 
@@ -188,7 +166,7 @@ DrawObjData:
 	sta $d020
 #endif 
 
-	ldx #PIXIE_32x32
+	ldx #PIXIE_48x48
 	jsr DrawPixie
 
 	plx
@@ -225,7 +203,7 @@ iloop1:
 	sta Objs1PosYLo,x
 
 	txa
-	and #$03
+	and #$00
 	clc
 	adc #$00
 	asl

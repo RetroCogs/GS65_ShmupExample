@@ -21,10 +21,10 @@ gsIniTitles:
 	sta GameStateData+2
 
 	_set16im($0000, Camera.YScroll)
-	_set16im($0001, Camera.CamVelY)
+	_set16im($ffff, Camera.CamVelY)
 
 	_set16im($0000, Camera.XScroll)
-	_set16im($0001, Camera.CamVelX)
+	_set16im($0000, Camera.CamVelX)
 
 	jsr InitLayoutCommon
 
@@ -83,27 +83,7 @@ gsUpdTitles:
 	_set16im($ffff, Camera.CamVelX)
 
 !:
-	// Min Y bounds
-	lda Camera.YScroll+1
-	bpl !+
 
-	_set16im($0000, Camera.YScroll)
-	_set16im($0001, Camera.CamVelY)
-
-!:
-
-	// Max Y bounds
-	sec
-	lda Camera.YScroll+0
-	sbc #<MAXYBOUNDS
-	lda Camera.YScroll+1
-	sbc #>MAXYBOUNDS
-	bmi !+
-
-	_set16im(MAXYBOUNDS, Camera.YScroll)
-	_set16im($ffff, Camera.CamVelY)
-
-!:
 
 donemove:
 
@@ -200,6 +180,10 @@ UpdateLayoutCommon:
 	// Copy Camera.XScroll into Tmp
 	_set16(Camera.XScroll, Tmp)
 	_set16(Camera.YScroll, Tmp1)
+
+	_half16(Tmp)
+	_half16(Tmp1)
+
 
 	// Update scroll values for the next frame
 	{

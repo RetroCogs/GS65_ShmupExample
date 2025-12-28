@@ -38,8 +38,8 @@
 // ------------------------------------------------------------
 // Defines to describe the screen size
 //
-.const SCREEN_WIDTH = 320
-.const SCREEN_HEIGHT = 200
+.const SCREEN_WIDTH = 256
+.const SCREEN_HEIGHT = 216
 
 // ------------------------------------------------------------
 //
@@ -85,14 +85,11 @@
 // Static BG Map sizes, in this example we are expanding the tile / map
 // set into a static buffer, for a real game you'd want to be more fancy
 //
-.const BG0ROWSIZE = (512 / 16) * 2
-.const BG0NUMROWS = (256 / 8)
+.const BG0ROWSIZE = (256 / 16) * 2
+.const BG0NUMROWS = (1024 / 8)
 
-.const BG1ROWSIZE = (512 / 16) * 2
-.const BG1NUMROWS = (512 / 8)
-
-.const BG2ROWSIZE = (512 / 16) * 2
-.const BG2NUMROWS = (512 / 8)
+.const BG1ROWSIZE = (256 / 16) * 2
+.const BG1NUMROWS = (1024 / 8)
 
 .const MAXXBOUNDS = 512 - SCREEN_WIDTH
 .const MAXYBOUNDS = 512 - SCREEN_HEIGHT
@@ -104,7 +101,6 @@
 	PAL_FONTHUD,
 	PAL_BG0,
 	PAL_BG1,
-	PAL_BG2,
 
 	PAL_SPR,
 
@@ -150,9 +146,9 @@ SaveStateEnd:
 .const bgCharsBegin = StartSection("GraphicsRan", GRAPHICS_RAM, PIXIEANDSCREEN_RAM-GRAPHICS_RAM)
 .const bg0Chars = AddAsset("F", "sdcard/bg20_chr.bin")
 .const bg1Chars = AddAsset("F", "sdcard/bg21_chr.bin")
-.const bg2Chars = AddAsset("F", "sdcard/bg22_chr.bin")
 .const sprFont = AddAsset("F", "sdcard/font_chr.bin")
 .const sprite32x32Chars = AddAsset("F", "sdcard/32x32sprite_chr.bin")
+.const sprite48x48Chars = AddAsset("F", "sdcard/48x48sprite_chr.bin")
 .const bgCharsEnd = EndSection()
 
 .print "--------"
@@ -414,8 +410,7 @@ Palette:
 	.import binary "./sdcard/font_pal.bin"
 	.import binary "./sdcard/bg20_pal.bin"
 	.import binary "./sdcard/bg21_pal.bin"
-	.import binary "./sdcard/bg22_pal.bin"
-	.import binary "./sdcard/32x32sprite_pal.bin"
+	.import binary "./sdcard/48x48sprite_pal.bin"
 
 // ------------------------------------------------------------
 .segment GraphicsRam "Graphics RAM"
