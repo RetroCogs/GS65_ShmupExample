@@ -30,7 +30,8 @@ gsIniPlay:
 	_set16im($0000, Camera.XScroll)
 	_set16im($0000, Camera.CamVelX)
 
-	jsr InitObjData
+	jsr Player.Init
+	jsr Bullets.InitList
 
 	jsr InitLayoutCommon
 
@@ -71,18 +72,19 @@ gsUpdPlay:
 
 donemove:
 
-	jsr UpdateObjData
+	jsr Player.Update
+	jsr Bullets.Update
 
 	jsr UpdateLayoutCommon
 
-	lda System.DPadClick
-	and #$10
-	beq _not_fire
+// 	lda System.DPadClick
+// 	and #$10
+// 	beq _not_fire
 
-	lda #GStateCredits
-	sta RequestGameState
+// 	lda #GStateCredits
+// 	sta RequestGameState
 
-_not_fire:
+// _not_fire:
 
 	rts
 }
@@ -91,148 +93,8 @@ _not_fire:
 //
 gsDrwPlay: 
 {
-	jsr DrawObjData
-
-	rts
-}
-
-// ------------------------------------------------------------
-//
-UpdateObjData:
-{
-	// Add Objs into the work ram here
-	//
-	ldx #$00
-!:
-	clc
-	lda Objs1PosXLo,x
-	adc Objs1VelXLo,x
-	sta Objs1PosXLo,x
-	lda Objs1PosXHi,x
-	adc Objs1VelXHi,x
-	and #$01
-	sta Objs1PosXHi,x
-
-	clc
-	lda Objs1PosYLo,x
-	adc Objs1VelY,x
-	sta Objs1PosYLo,x
-
-	inx
-	cpx #NUM_OBJS1
-	bne !-
-
-	rts
-}
-
-// ------------------------------------------------------------
-//
-DrawObjData:
-{
-	_set16im(sprite48x48Chars.baseChar, DrawBaseChr)			// Start charIndx with first pixie char
-
-	_set8im((PAL_SPR << 4) | $0f, DrawPal)
-
-	// Add Objs into the work ram here
-	//
-	ldx #$00
-!:
-	phx
-
-	sec
-	lda Objs1PosYLo,x
-	sbc #$20
-	sta DrawPosY+0
-	lda #$00
-	sbc #$00
-	sta DrawPosY+1
-
-	sec
-	lda Objs1PosXLo,x
-	sbc #$20
-	sta DrawPosX+0
-	lda Objs1PosXHi,x
-	sbc #$00
-	sta DrawPosX+1
-
-	lda Objs1Spr,x
-	sta DrawSChr
-
-#if USE_DBG
-	clc
-	lda $d020
-	adc #$01
-	and #$0f
-	sta $d020
-#endif 
-
-	ldx #PIXIE_48x48
-	jsr DrawPixie
-
-	plx
-	inx
-	cpx #NUM_OBJS1
-	bne !-
-
-	rts
-}
-
-// ------------------------------------------------------------
-//
-initXVel:	.word $ffff,$0001
-initYVel:	.byte $fe,$ff,$01,$02
-
-InitObjData:
-{
-    .var xpos = Tmp       // 16bit
-    .var ypos = Tmp+2     // 8bit
-
-	// Init Obj group 1
-	//
-	//
-	_set16im(0, xpos)
-	_set8im(0, ypos)
-
-	ldx #$00
-iloop1:
-	lda xpos+0
-	sta Objs1PosXLo,x
-	lda xpos+1
-	sta Objs1PosXHi,x
-	lda ypos
-	sta Objs1PosYLo,x
-
-	txa
-	and #$00
-	clc
-	adc #$00
-	asl
-	asl
-	asl
-	sta Objs1Spr,x
-
-	txa
-	and #$01
-	asl
-	tay
-	lda initXVel+0,y
-	sta Objs1VelXLo,x
-	lda initXVel+1,y
-	sta Objs1VelXHi,x
-
-	txa
-	and #$03
-	tay
-	lda initYVel,y
-	sta Objs1VelY,x
-
-	_add16im(xpos, -28, xpos)
-	_and16im(xpos, $1ff, xpos)
-	_add8im(ypos, 10, ypos)
-
-	inx
-	cpx #NUM_OBJS1
-	bne iloop1
+	jsr Bullets.Draw
+	jsr Player.Draw
 
 	rts
 }

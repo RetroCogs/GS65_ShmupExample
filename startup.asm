@@ -6,6 +6,8 @@
 
 #define USE_DBG				// enable to see raster costs
 
+#define PLAYER_CANDIE
+
 // ------------------------------------------------------------
 // Memory layout
 //
@@ -102,7 +104,11 @@
 	PAL_BG0,
 	PAL_BG1,
 
-	PAL_SPR,
+	PAL_BULLETS,
+
+	PAL_PLAYER,
+
+	PAL_ENM,
 
 	NUM_PALETTES
 }
@@ -147,7 +153,8 @@ SaveStateEnd:
 .const bg0Chars = AddAsset("F", "sdcard/bg20_chr.bin")
 .const bg1Chars = AddAsset("F", "sdcard/bg21_chr.bin")
 .const sprFont = AddAsset("F", "sdcard/font_chr.bin")
-.const sprite32x32Chars = AddAsset("F", "sdcard/32x32sprite_chr.bin")
+.const bulletsChars = AddAsset("F", "sdcard/bullets_chr.bin")
+.const playerChars = AddAsset("F", "sdcard/player_chr.bin")
 .const sprite48x48Chars = AddAsset("F", "sdcard/48x48sprite_chr.bin")
 .const bgCharsEnd = EndSection()
 
@@ -395,6 +402,11 @@ colLoop:
 #import "gsCredits.s"
 #import "bgmap.s"
 
+#import "objList_Inline.s"
+
+#import "Player.s"
+#import "Bullets.s"
+
 .segment Data "GameState Tables"
 GSIniStateTable:
 	.fillword GSIniStateList.size(), GSIniStateList.get(i)
@@ -410,6 +422,8 @@ Palette:
 	.import binary "./sdcard/font_pal.bin"
 	.import binary "./sdcard/bg20_pal.bin"
 	.import binary "./sdcard/bg21_pal.bin"
+	.import binary "./sdcard/bullets_pal.bin"
+	.import binary "./sdcard/player_pal.bin"
 	.import binary "./sdcard/48x48sprite_pal.bin"
 
 // ------------------------------------------------------------

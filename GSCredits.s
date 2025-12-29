@@ -28,8 +28,6 @@ gsIniCredits:
 	_set16im($0000, Camera.XScroll)
 	_set16im($0000, Camera.CamVelX)
 
-	jsr InitObjData
-
 	jsr InitLayoutCommon
 
 	jsr InitPixies
@@ -66,8 +64,6 @@ gsUpdCredits:
 
 donemove:
 
-	jsr UpdateObjData
-
 	jsr UpdateLayoutCommon
 
 	lda System.DPadClick
@@ -87,8 +83,6 @@ _not_fire:
 gsDrwCredits: 
 {
 	_set8im($0f, DrawPal)
-
-	jsr DrawObjData
 
 	rts
 }

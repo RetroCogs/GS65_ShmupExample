@@ -109,30 +109,6 @@ gsDrwTitles:
 
 	// lda Camera.YScroll+0
 	// sta PixieYShift
-	
-	DbgBord(11)
-
-	lda #$50
-	sta TextPosY
-
-	sec
-	lda Layout.LayoutWidth+0
-	sbc GameStateData+0
-	sta TextPosX+0
-	lda Layout.LayoutWidth+1
-	sbc GameStateData+1
-	sta TextPosX+1
-
-	lda GameStateData+2
-	asl
-	tay
-
-    lda introTxtTable,y
-    sta TextPtr+0
-    lda introTxtTable+1,y
-    sta TextPtr+1
-
-	TextDrawSpriteMsg(false, 192, true)
 
 	DbgBord(9)
 
@@ -325,39 +301,20 @@ RenderLayout1BG1b:
 // ---
 .segment Data "GameState Titles"
 
-introTxtTable:
-	.word introTxt1, introTxt2, introTxt3, introTxt4
-
 .encoding "screencode_mixed"
 testTxt1:
-	.text "game shell 65"
+	.text "shmup"
 	.byte $ff
 testTxt2:
-	.text "[press fire to start]"
+	.text "[press fire]"
 	.byte $ff
+
 testTxt3:
 	.text "00"
 	.byte $ff
 
 hexTable:
 	.text "0123456789abcdef"
-
-introTxt1:
-	.text "welcome to gameshell65"
-	.byte $ff
-introTxt2:
-	.text "code by retrocogs "
-	.byte $1e
-	.byte $ff
-introTxt3:
-	.text "iffl code by mirage "
-	.byte $1f
-	.byte $ff
-introTxt4:
-	.text "now go build your game "
-	.byte $1f
-	.byte $ff
-
 
 
 

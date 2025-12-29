@@ -40,7 +40,8 @@ datablobs:
 		sdcard/bg20_chr.bin \
 		sdcard/bg21_chr.bin \
 		sdcard/font_chr.bin \
-		sdcard/32x32sprite_chr.bin \
+		sdcard/bullets_chr.bin \
+		sdcard/player_chr.bin \
 		sdcard/48x48sprite_chr.bin \
 		sdcard/data.bin
 	$(MEGATOOL) -a sdcard/data.bin 00000000
@@ -56,7 +57,8 @@ map:
 
 data: map
 	$(PNG65) sprites --ncm --size 16,16 --input "assets/font.png" --output "sdcard" --nofill
-	$(PNG65) sprites --ncm --size 32,32 --input "assets/32x32sprite.png" --output "sdcard" --nofill
+	$(PNG65) sprites --ncm --size 16,16 --input "assets/bullets.png" --output "sdcard" --nofill
+	$(PNG65) sprites --ncm --size 32,32 --input "assets/player.png" --output "sdcard" --nofill
 	$(PNG65) sprites --ncm --size 48,48 --input "assets/48x48sprite.png" --output "sdcard" --nofill
 
 run: all
