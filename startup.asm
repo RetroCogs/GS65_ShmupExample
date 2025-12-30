@@ -43,6 +43,8 @@
 .const SCREEN_WIDTH = 256
 .const SCREEN_HEIGHT = 216
 
+.function PX(x) { .return (x * (1<<8)) }
+
 // ------------------------------------------------------------
 //
 #import "m65macros.s"
@@ -110,6 +112,8 @@
 
 	PAL_ENM,
 
+	PAL_FLASH,
+
 	NUM_PALETTES
 }
 
@@ -125,6 +129,11 @@ Tmp4:			.word $0000,$0000
 Tmp5:			.word $0000,$0000
 Tmp6:			.word $0000,$0000
 Tmp7:			.word $0000,$0000
+
+SpawnPattern:	.byte $00
+SpawnPosX:		.word $0000
+SpawnPosY:		.word $0000
+SpawnData:		.byte $00, $00, $00, $00
 
 // ------------------------------------------------------------
 //
@@ -404,8 +413,13 @@ colLoop:
 
 #import "objList_Inline.s"
 
+#import "Math.s"
+
 #import "Player.s"
 #import "Bullets.s"
+#import "EnemyMacros.s"
+#import "Enemy.s"
+#import "EnmProjectiles.s"
 
 .segment Data "GameState Tables"
 GSIniStateTable:
@@ -425,6 +439,7 @@ Palette:
 	.import binary "./sdcard/bullets_pal.bin"
 	.import binary "./sdcard/player_pal.bin"
 	.import binary "./sdcard/48x48sprite_pal.bin"
+	.fill 48,$ff
 
 // ------------------------------------------------------------
 .segment GraphicsRam "Graphics RAM"

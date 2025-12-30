@@ -1,7 +1,7 @@
 .namespace Player
 {
 
-.const INC_POS		= 2
+.const INC_POS		= PX(2)
 .const MIN_XPOS		= $10
 .const MAX_XPOS		= $f0
 .const MIN_YPOS		= $40
@@ -27,7 +27,9 @@ DelX:			.word $0000
 // ------------------------------------------------------------
 //
 .segment BSS "Player"
+XPosFr:				.byte 	$00
 XPos:				.byte 	$00,$00
+YPosFr:				.byte 	$00
 YPos:				.byte	$00,$00
 AnimFrame:			.byte	$00
 PalIndx:			.byte	(PAL_PLAYER << 4) | 15
@@ -121,8 +123,8 @@ iniSpawn:
 	// lda #(PAL_PLAYER << 4) | $0f
 	// sta PalIndx
 
-	_set16im($80,XPos)
-	_set16im($c0,YPos)
+	_set24im(PX($80),XPosFr)
+	_set24im(PX($c0),YPosFr)
 
 	rts
 }
@@ -171,7 +173,7 @@ updPlay:
 	and #$01
 	beq _not_up
 
-	_sub16im(YPos, INC_POS, YPos)
+	_sub24im(YPosFr, INC_POS, YPosFr)
 
 	sec
 	lda YPos+0
@@ -189,7 +191,7 @@ _not_up:
 	and #$02
 	beq _not_down
 
-	_add16im(YPos, INC_POS, YPos)
+	_add24im(YPosFr, INC_POS, YPosFr)
 
 	sec
 	lda YPos+0
@@ -207,7 +209,7 @@ _not_down:
 	and #$08
 	beq _not_right
 
-	_add16im(XPos, INC_POS, XPos)
+	_add24im(XPosFr, INC_POS, XPosFr)
 
 	sec
 	lda XPos+0
@@ -225,7 +227,7 @@ _not_right:
 	and #$04
 	beq _not_left
 
-	_sub16im(XPos, INC_POS, XPos)
+	_sub24im(XPosFr, INC_POS, XPosFr)
 
 	sec
 	lda XPos+0
@@ -251,6 +253,9 @@ _test_shoot:
 
 // 	jsr PlaySample2
 	
+	ldx #$00
+	jsr Bullets.CreateBullet
+	ldx #$01
 	jsr Bullets.CreateBullet
 
 	lda #$03
@@ -342,7 +347,7 @@ iniExpl:
 
 	// lda #0
 	// sta AnimFrame
-	// lda #(PAL_BULL_EXP << 4) | $0f
+	// lda #(PAL_BULLETS << 4) | $0f
 	// sta PalIndx
 	rts
 }
@@ -705,6 +710,12 @@ TestEnemyCollision:
 // 	ply
 // 	plz
 
+	rts
+}
+
+HitEnemy: 
+{
+	// jsr IncreaseScMult
 	rts
 }
 

@@ -32,6 +32,8 @@ gsIniPlay:
 
 	jsr Player.Init
 	jsr Bullets.InitList
+	jsr EnmProjectiles.InitList
+	jsr Enemy.InitList
 
 	jsr InitLayoutCommon
 
@@ -74,6 +76,8 @@ donemove:
 
 	jsr Player.Update
 	jsr Bullets.Update
+	jsr Enemy.Update
+	jsr EnmProjectiles.Update
 
 	jsr UpdateLayoutCommon
 
@@ -93,6 +97,8 @@ donemove:
 //
 gsDrwPlay: 
 {
+	jsr Enemy.Draw
+	jsr EnmProjectiles.Draw
 	jsr Bullets.Draw
 	jsr Player.Draw
 

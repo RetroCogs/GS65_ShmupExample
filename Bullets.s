@@ -1,11 +1,15 @@
 .namespace Bullets
 {
 
-.const NUM_BULLETS = 16
+.const NUM_BULLETS = 32
 
 .const INI_BULL_LIFE = 36
-.const INI_BULL_VELX = 0
-.const INI_BULL_VELY = -6
+
+.const INI_BULL_VELX = PX(0)
+.const INI_BULL_VELY = PX(-6)
+
+.const INI_BULL1_OFFX = -7
+.const INI_BULL2_OFFX = 7
 
 // ------------------------------------------------------------
 //
@@ -20,21 +24,29 @@ Size:			.byte $00
 ObjIndxList:
 	.fill NUM_BULLETS, 0
 
+ObjXFr:
+	.fill NUM_BULLETS, 0
 ObjXLo:
 	.fill NUM_BULLETS, 0
 ObjXHi:
 	.fill NUM_BULLETS, 0
 
+ObjVXFr:
+	.fill NUM_BULLETS, 0
 ObjVXLo:
 	.fill NUM_BULLETS, 0
 ObjVXHi:
 	.fill NUM_BULLETS, 0
 
+ObjYFr:
+	.fill NUM_BULLETS, 0
 ObjYLo:
 	.fill NUM_BULLETS, 0
 ObjYHi:
 	.fill NUM_BULLETS, 0
 
+ObjVYFr:
+	.fill NUM_BULLETS, 0
 ObjVYLo:
 	.fill NUM_BULLETS, 0
 ObjVYHi:
@@ -46,17 +58,28 @@ ObjL:
 	.fill NUM_BULLETS, 1
 
 .segment Data "Bullets"
-IniVelXLo:
+IniVelXFr:
 	.byte <INI_BULL_VELX, <INI_BULL_VELX
-IniVelXHi:
+IniVelXLo:
 	.byte >INI_BULL_VELX, >INI_BULL_VELX
-IniOffX:
-    .byte 0,0
-IniVelYLo:
+IniVelXHi:
+	.byte [INI_BULL_VELX>>16], [INI_BULL_VELX>>16]
+
+IniOffXLo:
+    .byte <INI_BULL1_OFFX, <INI_BULL2_OFFX
+IniOffXHi:
+    .byte >INI_BULL1_OFFX, >INI_BULL2_OFFX
+
+IniVelYFr:
 	.byte <INI_BULL_VELY, <INI_BULL_VELY
-IniVelYHi:
+IniVelYLo:
 	.byte >INI_BULL_VELY, >INI_BULL_VELY
-IniOffY:
+IniVelYHi:
+	.byte [INI_BULL_VELY>>16], [INI_BULL_VELY>>16]
+
+IniOffYLo:
+    .byte 0,0
+IniOffYHi:
     .byte 0,0
 
 IniA:
@@ -109,26 +132,35 @@ InitObj:
 	lda #INI_BULL_LIFE
 	sta ObjL,y
 
+	lda Player.XPosFr
+	sta ObjXFr,y
+    clc
 	lda Player.XPos+0
+    adc IniOffXLo,x
 	sta ObjXLo,y
 	lda Player.XPos+1
+    adc IniOffXHi,x
 	sta ObjXHi,y
 
-	clc
+	lda Player.YPosFr
+	sta ObjYFr,y
+    clc
 	lda Player.YPos+0
+    adc IniOffYLo,x
 	sta ObjYLo,y
 	lda Player.YPos+1
+    adc IniOffYHi,x
 	sta ObjYHi,y
 
-    ldx #0
-
-	clc
+	lda IniVelXFr,x
+	sta ObjVXFr,y
 	lda IniVelXLo,x
 	sta ObjVXLo,y
 	lda IniVelXHi,x
 	sta ObjVXHi,y
 
-	clc
+	lda IniVelYFr,x
+	sta ObjVYFr,y
 	lda IniVelYLo,x
 	sta ObjVYLo,y
 	lda IniVelYHi,x
@@ -148,6 +180,9 @@ InitObj:
 MoveObj: 
 {
 	clc
+	lda ObjXFr,y
+	adc ObjVXFr,y
+	sta ObjXFr,y
 	lda ObjXLo,y
 	adc ObjVXLo,y
 	sta ObjXLo,y
@@ -156,6 +191,9 @@ MoveObj:
 	sta ObjXHi,y
 
 	clc
+	lda ObjYFr,y
+	adc ObjVYFr,y
+	sta ObjYFr,y
 	lda ObjYLo,y
 	adc ObjVYLo,y
 	sta ObjYLo,y
