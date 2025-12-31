@@ -16,8 +16,8 @@
 // registers:	A,X,Z free to use
 // preserve: 	Y
 //
-SpawnPatternXVL:	.byte $00, <PX(24), <PX(-24)
-SpawnPatternXVH:	.byte $00, >PX(24), >PX(-24)
+SpawnPatternXVL:	.byte $00, <FP(24), <FP(-24)
+SpawnPatternXVH:	.byte $00, >FP(24), >FP(-24)
 
 iniSpawnSpawner: 
 {

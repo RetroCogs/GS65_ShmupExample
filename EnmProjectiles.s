@@ -2,7 +2,7 @@
 {
 
 .const NUM_PROJECTILES = 64
-.const INI_BULL_VEL = PX($70)
+.const INI_BULL_VEL = FP($70)
 
 .const MIN_YPOS = $08
 .const MAX_YPOS = $c0

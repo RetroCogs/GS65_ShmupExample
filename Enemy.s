@@ -11,19 +11,9 @@
 .const ENBAS_SMLCOS		= $20		// - Small vertical cosine offset (based on timer)
 .const ENBAS_SPAWNBLUE	= $10		// - Can spawn blue basics
 
-// Miner:
-//
-.const ENMIN_MOVING		= $80		// - Moving horizontally
-
 // Spawner:
 //
 .const ENSP_PLAYER_REL	= $40
-
-
-//				$40 - Horizontal direction	- clear = right, set = left
-//				$20 - Miner type - clear = red, set = blue
-//				$10 - 
-//
 
 // ------------------------------------------------------------
 //
@@ -32,8 +22,8 @@
 
 .const NUM_ENEMIES = 64
 
-.const BULLCOLL_LEFT	= PX(-$10)
-.const BULLCOLL_RIGHT	= PX($20)
+.const BULLCOLL_LEFT	= -$10
+.const BULLCOLL_RIGHT	= $20
 
 // ------------------------------------------------------------
 //
@@ -103,11 +93,15 @@ TestR:			.byte $00
 ObjIndxList:
 	.fill NUM_ENEMIES, 0
 
+XPosFr:
+	.fill NUM_ENEMIES, 0
 XPosLo:
 	.fill NUM_ENEMIES, 0
 XPosHi:
 	.fill NUM_ENEMIES, 0
 
+XVelFr:
+	.fill NUM_ENEMIES, 0
 XVelLo:
 	.fill NUM_ENEMIES, 0
 XVelHi:
@@ -163,7 +157,8 @@ SpIndx:
 // ------------------------------------------------------------
 //
 .segment Code "Enemy"
-InitList: {
+InitList: 
+{
 	_initlist(ObjIndxList, SplitPos, IndexPtr, NUM_ENEMIES, Size)
 
 	lda #$00
@@ -173,12 +168,14 @@ InitList: {
 	rts
 }
 
-Alloc: {
+Alloc: 
+{
 	_alloc(SplitPos, IndexPtr)
 	rts
 }
 
-Free: {
+Free: 
+{
 	_free(SplitPos, IndexPtr)
 	rts
 }
@@ -193,7 +190,8 @@ EnmSpawnType:
 //				Z = parent ID
 // registers:	A,X,Y,Z free to use
 //
-Create: {
+Create: 
+{
 	.var spawnType = Tmp		// 8bit
 
 	sta spawnType
@@ -229,7 +227,8 @@ Create: {
 // params:	y = object ID
 //			z = spawn Parent
 //
-SwitchToState: {
+SwitchToState: 
+{
 	_setEnmStateFromA()
 
 	_getEnmStateToA()
@@ -242,7 +241,8 @@ SwitchToState: {
 
 // ------------------------------------------------------------
 //
-Update: {
+Update: 
+{
 	// 
 	ldz SplitPos
 	lbra checkdone
@@ -251,7 +251,6 @@ moveloop:
 	// X = index of current object
 	lda (IndexPtr),z
 	tay
-
 
 	_getEnmStateToA()
 	asl
@@ -281,7 +280,8 @@ checkdone:
 
 // ------------------------------------------------------------
 //
-Draw: {
+Draw: 
+{
 	//
 	ldz SplitPos
 	bra checkdone
@@ -318,7 +318,8 @@ checkdone:
 #import "EnmSpawner.s"
 
 // ------------------------------------------------------------
-HandleHit: {
+HandleHit: 
+{
 	lda #(PAL_FLASH << 4) | 15
 	sta PalIndx,y
 
@@ -350,7 +351,8 @@ HandleHit: {
 // params:		Y = object ID
 // preserve: 	Y and Z
 //
-iniExpl: {
+iniExpl: 
+{
 	// Now inactive
 	_clearEnmFlag(ENMST_ACTIVE)
 
@@ -376,7 +378,8 @@ iniExpl: {
 	rts
 }
 
-updExpl: {
+updExpl: 
+{
  	lda AnimDelay,y
 	inc
 	sta AnimDelay,y
@@ -405,13 +408,15 @@ updExpl: {
 // params:		Y = object ID
 // preserve: 	Y and Z
 //
-iniHide: {
+iniHide: 
+{
 	lda #$03
 	sta Timer,y
 	rts
 }
 
-updHide: {
+updHide: 
+{
 	sec
 	lda Timer,y
 	sbc #$1
@@ -431,7 +436,8 @@ updHide: {
 // params:		Y = object ID
 // preserve: 	Y and Z
 //
-drwExpl: {
+drwExpl: 
+{
 	// _sub16im(RRBSpr.XPos, 16, RRBSpr.XPos)
 	// _sub8im(RRBSpr.YPos, 16, RRBSpr.YPos)
 
@@ -452,14 +458,15 @@ drwExpl: {
 // params:		Y = object ID
 // preserve: 	Y and Z
 //
-drwHide: {
+drwHide: 
+{
 	rts
 }
 
 // ------------------------------------------------------------
 //
-TestBulletCollision: {
-
+TestBulletCollision: 
+{
 	lda #$00
 	sta TestR
 
@@ -735,6 +742,9 @@ setScreenPos: {
 //
 ApplyVelocityX: {
 	clc
+	lda XPosFr,y
+	adc XVelFr,y
+	sta XPosFr,y
 	lda XPosLo,y
 	adc XVelLo,y
 	sta XPosLo,y
@@ -1027,7 +1037,10 @@ CalcVectorFromAngle: {
 	rts
 }
 
-InitSpawnedPosData: {
+InitSpawnedPosData: 
+{
+	lda #$00
+	sta XPosFr,y
 	lda SpawnPosX+0
 	sta XPosLo,y
 	lda SpawnPosX+1

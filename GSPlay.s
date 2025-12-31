@@ -42,6 +42,23 @@ gsIniPlay:
 	rts
 }
 
+createenemy:
+{
+	jsr GetRandom
+	sta SpawnPosX+0
+	lda #$00
+	sta SpawnPosX+1
+
+	// _set16im(128, SpawnPosX)
+	_set16im(-32, SpawnPosY)
+	_set32im($00000000, SpawnData)
+
+	lda #ENM_BASIC
+	jsr Enemy.Create	
+
+	rts
+}
+
 // ------------------------------------------------------------
 //
 gsUpdPlay: 
@@ -63,6 +80,14 @@ gsUpdPlay:
 !:
 
 //	_add16im(Camera.XScroll, 1, Camera.XScroll)
+
+	lda Irq.VBlankCount
+	and #$1f
+	bne no_create
+
+	jsr createenemy
+
+no_create:
 
 	lda Irq.VBlankCount
 	and #$00

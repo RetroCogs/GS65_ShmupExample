@@ -43,7 +43,7 @@
 .const SCREEN_WIDTH = 256
 .const SCREEN_HEIGHT = 216
 
-.function PX(x) { .return (x * (1<<8)) }
+.function FP(x) { .return (x * (1<<8)) }
 
 // ------------------------------------------------------------
 //
@@ -403,6 +403,8 @@ colLoop:
 
 // ------------------------------------------------------------
 //
+#import "EnemyMacros.s"
+
 #import "irq.s"
 #import "camera.s"
 #import "pixieText.s"
@@ -417,7 +419,6 @@ colLoop:
 
 #import "Player.s"
 #import "Bullets.s"
-#import "EnemyMacros.s"
 #import "Enemy.s"
 #import "EnmProjectiles.s"
 

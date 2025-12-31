@@ -5,8 +5,8 @@
 
 .const INI_BULL_LIFE = 36
 
-.const INI_BULL_VELX = PX(0)
-.const INI_BULL_VELY = PX(-6)
+.const INI_BULL_VELX = FP(0)
+.const INI_BULL_VELY = FP(-6)
 
 .const INI_BULL1_OFFX = -7
 .const INI_BULL2_OFFX = 7

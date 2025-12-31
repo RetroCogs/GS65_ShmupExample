@@ -1,7 +1,7 @@
 .namespace Player
 {
 
-.const INC_POS		= PX(2)
+.const INC_POS		= FP(2)
 .const MIN_XPOS		= $10
 .const MAX_XPOS		= $f0
 .const MIN_YPOS		= $40
@@ -123,8 +123,8 @@ iniSpawn:
 	// lda #(PAL_PLAYER << 4) | $0f
 	// sta PalIndx
 
-	_set24im(PX($80),XPosFr)
-	_set24im(PX($c0),YPosFr)
+	_set24im(FP($80),XPosFr)
+	_set24im(FP($c0),YPosFr)
 
 	rts
 }
