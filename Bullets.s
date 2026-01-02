@@ -54,6 +54,8 @@ ObjVYHi:
 
 ObjA:
 	.fill NUM_BULLETS, 0
+ObjT:
+	.fill NUM_BULLETS, 0
 ObjL:
 	.fill NUM_BULLETS, 1
 
@@ -83,7 +85,7 @@ IniOffYHi:
     .byte 0,0
 
 IniA:
-	.byte $02, $00
+	.byte $00, $00
 
 // ------------------------------------------------------------
 //
@@ -169,6 +171,9 @@ InitObj:
 	lda IniA,x
 	sta ObjA,y
 
+	lda #$00
+	sta ObjT,y
+
 	plx
 	rts
 }
@@ -179,6 +184,11 @@ InitObj:
 //
 MoveObj: 
 {
+	clc
+	lda ObjT,y
+	adc #$01
+	sta ObjT,y
+
 	clc
 	lda ObjXFr,y
 	adc ObjVXFr,y
@@ -200,6 +210,20 @@ MoveObj:
 	lda ObjYHi,y
 	adc ObjVYHi,y
 	sta ObjYHi,y
+
+	lda ObjT,y
+	and #$03
+	bne no_anim
+	
+	clc
+	lda ObjA,y
+	cmp #6
+	bcs no_anim
+
+	adc #3
+	sta ObjA,y
+
+no_anim:
 
 	// decrease life
 	sec
@@ -266,16 +290,16 @@ drawloop:
 
     sec
     lda ObjYLo,y
-    sbc #8
+    sbc #12
     sta DrawPosY+0
     lda ObjYHi,y
     sbc #0
     sta DrawPosY+1
 
-	lda #$00
+	lda ObjA,y
 	sta DrawSChr
 
-	ldx #PIXIE_16x16
+	ldx #PIXIE_16x24
 	jsr DrawPixie
 
 	inz

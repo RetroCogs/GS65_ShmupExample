@@ -162,7 +162,7 @@ SaveStateEnd:
 .const bg0Chars = AddAsset("F", "sdcard/bg20_chr.bin")
 .const bg1Chars = AddAsset("F", "sdcard/bg21_chr.bin")
 .const sprFont = AddAsset("F", "sdcard/font_chr.bin")
-.const bulletsChars = AddAsset("F", "sdcard/bullets_chr.bin")
+.const bulletsChars = AddAsset("F", "sdcard/plbull_chr.bin")
 .const playerChars = AddAsset("F", "sdcard/player_chr.bin")
 .const enemy00Chars = AddAsset("F", "sdcard/enemy00_chr.bin")
 .const bgCharsEnd = EndSection()
@@ -437,7 +437,7 @@ Palette:
 	.import binary "./sdcard/font_pal.bin"
 	.import binary "./sdcard/bg20_pal.bin"
 	.import binary "./sdcard/bg21_pal.bin"
-	.import binary "./sdcard/bullets_pal.bin"
+	.import binary "./sdcard/plbull_pal.bin"
 	.import binary "./sdcard/player_pal.bin"
 	.import binary "./sdcard/enemy00_pal.bin"
 	.fill 48,$ff

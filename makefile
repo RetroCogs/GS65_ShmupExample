@@ -40,7 +40,7 @@ datablobs:
 		sdcard/bg20_chr.bin \
 		sdcard/bg21_chr.bin \
 		sdcard/font_chr.bin \
-		sdcard/bullets_chr.bin \
+		sdcard/plbull_chr.bin \
 		sdcard/player_chr.bin \
 		sdcard/enemy00_chr.bin \
 		sdcard/data.bin
@@ -57,7 +57,7 @@ map:
 
 data: map
 	$(PNG65) sprites --ncm --size 16,16 --input "assets/font.png" --output "sdcard" --nofill
-	$(PNG65) sprites --ncm --size 16,16 --input "assets/bullets.png" --output "sdcard" --nofill
+	$(PNG65) sprites --ncm --size 16,24 --input "assets/plbull.png" --output "sdcard" --nofill
 	$(PNG65) sprites --ncm --size 32,32 --input "assets/player.png" --output "sdcard" --nofill
 	$(PNG65) sprites --ncm --size 32,32 --input "assets/enemy00.png" --output "sdcard" --nofill
 
