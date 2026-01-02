@@ -110,7 +110,7 @@
 
 	PAL_PLAYER,
 
-	PAL_ENM,
+	PAL_ENM00,
 
 	PAL_FLASH,
 
@@ -164,7 +164,7 @@ SaveStateEnd:
 .const sprFont = AddAsset("F", "sdcard/font_chr.bin")
 .const bulletsChars = AddAsset("F", "sdcard/bullets_chr.bin")
 .const playerChars = AddAsset("F", "sdcard/player_chr.bin")
-.const sprite48x48Chars = AddAsset("F", "sdcard/48x48sprite_chr.bin")
+.const enemy00Chars = AddAsset("F", "sdcard/enemy00_chr.bin")
 .const bgCharsEnd = EndSection()
 
 .print "--------"
@@ -439,7 +439,7 @@ Palette:
 	.import binary "./sdcard/bg21_pal.bin"
 	.import binary "./sdcard/bullets_pal.bin"
 	.import binary "./sdcard/player_pal.bin"
-	.import binary "./sdcard/48x48sprite_pal.bin"
+	.import binary "./sdcard/enemy00_pal.bin"
 	.fill 48,$ff
 
 // ------------------------------------------------------------

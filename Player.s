@@ -437,7 +437,7 @@ drwPlay:
 	_sub16im(XPos, 16, DrawPosX)
 	_sub16im(YPos, 16, DrawPosY)
 
-	lda #$00
+	lda #8*2
 	sta DrawSChr
 
 	ldx #PIXIE_32x32

@@ -79,12 +79,38 @@ updPlayBasic:
 	phx
 
 	clc
+	lda Timer,y
+	adc #$01
+	sta Timer,y
+
+	and #$03
+	bne no_anim
+
+	clc
+	lda AnimFrame,y
+	adc #$08
+	and #$1f
+	sta AnimFrame,y
+
+no_anim:
+
+	clc
 	lda YPosLo,y
 	adc #$01
 	sta YPosLo,y
 	lda YPosHi,y
 	adc #$00
 	sta YPosHi,y
+
+	cmp #$01
+	bne no_kill				// off the screen
+
+	lda #StateHide			// kill it
+ 	jsr SwitchToState
+
+	bra done
+
+no_kill:
 
 	lda XPosLo,y
 	sta CollX+0
@@ -95,7 +121,7 @@ updPlayBasic:
 	lda YPosHi,y
 	sta CollY+1
 
-	lda #(PAL_PLAYER << 4) | 15
+	lda #(PAL_ENM00 << 4) | 15
 	sta PalIndx,y
 
 	// Test collisions
@@ -103,11 +129,11 @@ updPlayBasic:
 	jsr TestBulletCollision
 
 	lda TestR
-	beq !done+
+	beq done
 
 	jsr HandleHit
 
-!done:
+done:
 
 	plx
 	rts
@@ -138,7 +164,7 @@ drwSpawnBasic:
 //
 drwPlayBasic: 
 {
-	_set16im(playerChars.baseChar, DrawBaseChr)			// Start charIndx with first pixie char
+	_set16im(enemy00Chars.baseChar, DrawBaseChr)			// Start charIndx with first pixie char
 
 	lda PalIndx,y
 	sta DrawPal
@@ -159,7 +185,7 @@ drwPlayBasic:
 	sbc #0
 	sta DrawPosY+1
 
-	lda #$00
+	lda AnimFrame,y
 	sta DrawSChr
 
 	ldx #PIXIE_32x32
