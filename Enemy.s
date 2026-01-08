@@ -277,6 +277,15 @@ checkdone:
 //
 Draw: 
 {
+    // Prime the multiply unit for FP to Screen conversions
+    //
+	lda #$08
+	sta $d770
+	lda #$00
+	sta $d771
+	sta $d772
+	sta $d776
+
 	//
 	ldz SplitPos
 	bra checkdone
@@ -703,13 +712,6 @@ CalcRelativeDistanceToPlayer: {
 //
 setScreenPos: 
 {
-	lda #$08
-	sta $d770
-	lda #$00
-	sta $d771
-	sta $d772
-	sta $d776
-
 	lda XPosLo,y
 	sta $d774
 	lda XPosHi,y
