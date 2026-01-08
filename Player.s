@@ -2,10 +2,10 @@
 {
 
 .const INC_POS		= FP(2)
-.const MIN_XPOS		= $10
-.const MAX_XPOS		= $f0
-.const MIN_YPOS		= $40
-.const MAX_YPOS		= $D0
+.const MIN_XPOS		= FP(-16)       //FP($10)
+.const MAX_XPOS		= FP(256+16)    //FP($f0)
+.const MIN_YPOS		= FP(-16)       //FP($40)
+.const MAX_YPOS		= FP(256+16)    //FP($D0)
 
 // ------------------------------------------------------------
 //
@@ -27,9 +27,7 @@ DelX:			.word $0000
 // ------------------------------------------------------------
 //
 .segment BSS "Player"
-XPosFr:				.byte 	$00
 XPos:				.byte 	$00,$00
-YPosFr:				.byte 	$00
 YPos:				.byte	$00,$00
 AnimFrame:			.byte	$00
 PalIndx:			.byte	(PAL_PLAYER << 4) | 15
@@ -123,8 +121,8 @@ iniSpawn:
 	// lda #(PAL_PLAYER << 4) | $0f
 	// sta PalIndx
 
-	_set24im(FP($80),XPosFr)
-	_set24im(FP($c0),YPosFr)
+	_set16im(FP($80),XPos)
+	_set16im(FP($c0),YPos)
 
 	rts
 }
@@ -173,7 +171,7 @@ updPlay:
 	and #$01
 	beq _not_up
 
-	_sub24im(YPosFr, INC_POS, YPosFr)
+	_sub16im(YPos, INC_POS, YPos)
 
 	sec
 	lda YPos+0
@@ -191,7 +189,7 @@ _not_up:
 	and #$02
 	beq _not_down
 
-	_add24im(YPosFr, INC_POS, YPosFr)
+	_add16im(YPos, INC_POS, YPos)
 
 	sec
 	lda YPos+0
@@ -209,7 +207,7 @@ _not_down:
 	and #$08
 	beq _not_right
 
-	_add24im(XPosFr, INC_POS, XPosFr)
+	_add16im(XPos, INC_POS, XPos)
 
 	sec
 	lda XPos+0
@@ -227,7 +225,7 @@ _not_right:
 	and #$04
 	beq _not_left
 
-	_sub24im(XPosFr, INC_POS, XPosFr)
+	_sub16im(XPos, INC_POS, XPos)
 
 	sec
 	lda XPos+0
@@ -434,8 +432,8 @@ drwPlay:
 
 	_set8im((PAL_PLAYER << 4) | $0f, DrawPal)
 
-	_sub16im(XPos, 16, DrawPosX)
-	_sub16im(YPos, 16, DrawPosY)
+	_sub16im(DrawPosX, 16, DrawPosX)
+	_sub16im(DrawPosY, 16, DrawPosY)
 
 	lda #8*2
 	sta DrawSChr
@@ -484,52 +482,18 @@ drwHide:
 //
 setScreenPos: 
 {
-// 	_sub16(XPos+0, Camera.XPos, RRBSpr.XPos)
-		
-// 	lda #$08						// 2		20
-// 	sta $d770						// 4
-// 	lda #$00						// 2
-// 	sta $d771						// 4		
-// 	sta $d772						// 4
-// 	sta $d776						// 4
-// 	_set16(RRBSpr.XPos, $d774)		// 6 + 8	14
-// 	_set16($d779,RRBSpr.XPos)		// 8 + 6	14
+	lda #$08						// 2		20
+	sta $d770						// 4
+	lda #$00						// 2
+	sta $d771						// 4		
+	sta $d772						// 4
+	sta $d776						// 4
+	_set16(XPos, $d774)		        // 6 + 8	14
+	_set16($d779,DrawPosX)		    // 8 + 6	14
 
-// 	_add16im(YPos+1, 0, RRBSpr.YPos)
+	_set16(YPos, $d774)		        // 6 + 8	14
+	_set16($d779,DrawPosY)	    	// 8 + 6	14
 
-// 	lda AnimFrame
-// 	sta RRBSpr.SChr
-	
-// 	lda Timer
-// 	and #$04
-// 	bne notThrusting
-
-// 	lda AnimFrame
-// 	cmp #$00
-// 	bne notLeft
-
-// 	lda Thrusting
-// 	beq notThrusting
-
-// 	lda #30
-// 	sta RRBSpr.SChr
-// 	bra notThrusting
-
-// notLeft:
-
-// 	lda AnimFrame
-// 	cmp #24
-// 	bne notThrusting
-
-// 	lda Thrusting
-// 	beq notThrusting
-
-// 	lda #36
-// 	sta RRBSpr.SChr
-
-// notThrusting:
-// 	lda PalIndx
-// 	sta RRBSpr.Pal
 	rts
 }
 

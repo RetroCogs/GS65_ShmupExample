@@ -9,6 +9,9 @@
 .const BS_INI_VEL_RIGHT = FP(2)
 .const BS_INI_VEL_LEFT = FP(-2)
 
+.const YVEL = FP(1)
+.const YMAX = FP($100)
+
 // ------------------------------------------------------------
 // Update functions
 //
@@ -96,19 +99,19 @@ no_anim:
 
 	clc
 	lda YPosLo,y
-	adc #$01
+	adc #<YVEL
 	sta YPosLo,y
 	lda YPosHi,y
-	adc #$00
+	adc #>YVEL
 	sta YPosHi,y
 
-	cmp #$01
-	bne no_kill				// off the screen
+	// cmp #>YMAX
+	// bne no_kill				// off the screen
 
-	lda #StateHide			// kill it
- 	jsr SwitchToState
+	// lda #StateHide			// kill it
+ 	// jsr SwitchToState
 
-	bra done
+	// bra done
 
 no_kill:
 
@@ -169,21 +172,8 @@ drwPlayBasic:
 	lda PalIndx,y
 	sta DrawPal
 
-	sec
-	lda XPosLo,y
-	sbc #16
-	sta DrawPosX+0
-	lda XPosHi,y
-	sbc #0
-	sta DrawPosX+1
-
-	sec
-	lda YPosLo,y
-	sbc #16
-	sta DrawPosY+0
-	lda YPosHi,y
-	sbc #0
-	sta DrawPosY+1
+    _sub16im(DrawPosX, 16, DrawPosX)
+    _sub16im(DrawPosY, 16, DrawPosY)
 
 	lda AnimFrame,y
 	sta DrawSChr

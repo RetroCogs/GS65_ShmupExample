@@ -45,12 +45,13 @@ gsIniPlay:
 createenemy:
 {
 	jsr GetRandom
+    lda #<FP(32)
 	sta SpawnPosX+0
-	lda #$00
+	lda #>FP(32)
 	sta SpawnPosX+1
-
+    
 	// _set16im(128, SpawnPosX)
-	_set16im(-32, SpawnPosY)
+	_set16im(FP(-32), SpawnPosY)
 	_set32im($00000000, SpawnData)
 
 	lda #ENM_BASIC

@@ -8,8 +8,8 @@
 .const INI_BULL_VELX = FP(0)
 .const INI_BULL_VELY = FP(-6)
 
-.const INI_BULL1_OFFX = -7
-.const INI_BULL2_OFFX = 7
+.const INI_BULL1_OFFX = FP(-7)
+.const INI_BULL2_OFFX = FP(7)
 
 // ------------------------------------------------------------
 //
@@ -24,29 +24,21 @@ Size:			.byte $00
 ObjIndxList:
 	.fill NUM_BULLETS, 0
 
-ObjXFr:
-	.fill NUM_BULLETS, 0
 ObjXLo:
 	.fill NUM_BULLETS, 0
 ObjXHi:
 	.fill NUM_BULLETS, 0
 
-ObjVXFr:
-	.fill NUM_BULLETS, 0
 ObjVXLo:
 	.fill NUM_BULLETS, 0
 ObjVXHi:
 	.fill NUM_BULLETS, 0
 
-ObjYFr:
-	.fill NUM_BULLETS, 0
 ObjYLo:
 	.fill NUM_BULLETS, 0
 ObjYHi:
 	.fill NUM_BULLETS, 0
 
-ObjVYFr:
-	.fill NUM_BULLETS, 0
 ObjVYLo:
 	.fill NUM_BULLETS, 0
 ObjVYHi:
@@ -60,24 +52,20 @@ ObjL:
 	.fill NUM_BULLETS, 1
 
 .segment Data "Bullets"
-IniVelXFr:
-	.byte <INI_BULL_VELX, <INI_BULL_VELX
 IniVelXLo:
-	.byte >INI_BULL_VELX, >INI_BULL_VELX
+	.byte <INI_BULL_VELX, <INI_BULL_VELX
 IniVelXHi:
-	.byte [INI_BULL_VELX>>16], [INI_BULL_VELX>>16]
+	.byte >INI_BULL_VELX, >INI_BULL_VELX
 
 IniOffXLo:
     .byte <INI_BULL1_OFFX, <INI_BULL2_OFFX
 IniOffXHi:
     .byte >INI_BULL1_OFFX, >INI_BULL2_OFFX
 
-IniVelYFr:
-	.byte <INI_BULL_VELY, <INI_BULL_VELY
 IniVelYLo:
-	.byte >INI_BULL_VELY, >INI_BULL_VELY
+	.byte <INI_BULL_VELY, <INI_BULL_VELY
 IniVelYHi:
-	.byte [INI_BULL_VELY>>16], [INI_BULL_VELY>>16]
+	.byte >INI_BULL_VELY, >INI_BULL_VELY
 
 IniOffYLo:
     .byte 0,0
@@ -134,8 +122,6 @@ InitObj:
 	lda #INI_BULL_LIFE
 	sta ObjL,y
 
-	lda Player.XPosFr
-	sta ObjXFr,y
     clc
 	lda Player.XPos+0
     adc IniOffXLo,x
@@ -144,8 +130,6 @@ InitObj:
     adc IniOffXHi,x
 	sta ObjXHi,y
 
-	lda Player.YPosFr
-	sta ObjYFr,y
     clc
 	lda Player.YPos+0
     adc IniOffYLo,x
@@ -154,15 +138,11 @@ InitObj:
     adc IniOffYHi,x
 	sta ObjYHi,y
 
-	lda IniVelXFr,x
-	sta ObjVXFr,y
 	lda IniVelXLo,x
 	sta ObjVXLo,y
 	lda IniVelXHi,x
 	sta ObjVXHi,y
 
-	lda IniVelYFr,x
-	sta ObjVYFr,y
 	lda IniVelYLo,x
 	sta ObjVYLo,y
 	lda IniVelYHi,x
@@ -190,9 +170,6 @@ MoveObj:
 	sta ObjT,y
 
 	clc
-	lda ObjXFr,y
-	adc ObjVXFr,y
-	sta ObjXFr,y
 	lda ObjXLo,y
 	adc ObjVXLo,y
 	sta ObjXLo,y
@@ -201,9 +178,6 @@ MoveObj:
 	sta ObjXHi,y
 
 	clc
-	lda ObjYFr,y
-	adc ObjVYFr,y
-	sta ObjYFr,y
 	lda ObjYLo,y
 	adc ObjVYLo,y
 	sta ObjYLo,y
@@ -272,6 +246,15 @@ Draw:
 	_set16im(bulletsChars.baseChar, DrawBaseChr)			// Start charIndx with first pixie char
 	_set8im((PAL_BULLETS << 4) | $0f, DrawPal)
 
+    // Prime the multiply unit for FP to Screen conversions
+    //
+	lda #$08
+	sta $d770
+	lda #$00
+	sta $d771
+	sta $d772
+	sta $d776
+
 	//
 	ldz SplitPos
 	bra checkdone
@@ -280,21 +263,10 @@ drawloop:
 	lda (IndexPtr),z
 	tay
 
-    sec
-    lda ObjXLo,y
-    sbc #8
-    sta DrawPosX+0
-    lda ObjXHi,y
-    sbc #0
-    sta DrawPosX+1
+	jsr setScreenPos
 
-    sec
-    lda ObjYLo,y
-    sbc #12
-    sta DrawPosY+0
-    lda ObjYHi,y
-    sbc #0
-    sta DrawPosY+1
+	_sub16im(DrawPosX, 8, DrawPosX)
+	_sub8im(DrawPosY, 12, DrawPosY)
 
 	lda ObjA,y
 	sta DrawSChr
@@ -307,6 +279,27 @@ drawloop:
 checkdone:
 	cpz Size
 	bne drawloop
+
+	rts
+}
+
+// ------------------------------------------------------------
+//
+setScreenPos: 
+{
+	lda ObjXLo,y
+	sta $d774
+	lda ObjXHi,y
+	sta $d775
+
+	_set16($d779, DrawPosX)
+
+	lda ObjYLo,y
+	sta $d774
+	lda ObjYHi,y
+	sta $d775
+
+	_set16($d779, DrawPosY)
 
 	rts
 }
