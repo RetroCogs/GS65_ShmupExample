@@ -266,7 +266,7 @@ drawloop:
 	jsr setScreenPos
 
 	_sub16im(DrawPosX, 8, DrawPosX)
-	_sub8im(DrawPosY, 12, DrawPosY)
+	_sub16im(DrawPosY, 12, DrawPosY)
 
 	lda ObjA,y
 	sta DrawSChr
