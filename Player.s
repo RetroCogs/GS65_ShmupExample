@@ -2,10 +2,10 @@
 {
 
 .const INC_POS		= FP(2)
-.const MIN_XPOS		= FP(-16)       //FP($10)
-.const MAX_XPOS		= FP(256+16)    //FP($f0)
-.const MIN_YPOS		= FP(-16)       //FP($40)
-.const MAX_YPOS		= FP(256+16)    //FP($D0)
+.const MIN_XPOS		= FP($10)
+.const MAX_XPOS		= FP($f0)
+.const MIN_YPOS		= FP($40)
+.const MAX_YPOS		= FP($D0)
 
 // ------------------------------------------------------------
 //
