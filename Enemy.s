@@ -493,14 +493,6 @@ bcollloop:
 	sta TestX+1
 
 	sec
-	lda Bullets.ObjYLo,y
-	sbc CollY+0
-	sta TestY+0
-	lda Bullets.ObjYHi,y
-	sbc CollY+1
-	sta TestY+1
-
-	sec
 	lda TestX+0
 	sbc #<BULLCOLL_LEFT
 	sta bcheck0
@@ -514,6 +506,14 @@ bcollloop:
 	lda bcheck1:#$00
 	sbc #>BULLCOLL_RIGHT
 	bcs !+
+
+	sec
+	lda Bullets.ObjYLo,y
+	sbc CollY+0
+	sta TestY+0
+	lda Bullets.ObjYHi,y
+	sbc CollY+1
+	sta TestY+1
 
 	sec
 	lda TestY+0

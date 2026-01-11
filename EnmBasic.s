@@ -105,13 +105,13 @@ no_anim:
 	adc #>YVEL
 	sta YPosHi,y
 
-	// cmp #>YMAX
-	// bne no_kill				// off the screen
+	cmp #>YMAX
+	bne no_kill				// off the screen
 
-	// lda #StateHide			// kill it
- 	// jsr SwitchToState
+	lda #StateHide			// kill it
+ 	jsr SwitchToState
 
-	// bra done
+	bra done
 
 no_kill:
 
