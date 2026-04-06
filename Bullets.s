@@ -271,7 +271,7 @@ drawloop:
 	lda ObjA,y
 	sta DrawSChr
 
-	ldx #PIXIE_16x24
+	ldx #Pixie_16x24.id
 	jsr DrawPixie
 
 	inz

@@ -1,7 +1,7 @@
 // Only Segments Code and Data are included in the .prg, BSS and ZP are virtual
 // and must be proerly initialized.
 //
-.file [name="startup.prg", type="bin", segments="Code,Data"]
+.file [name="startup.prg", segments="Code,Data"]
 .cpu _45gs02				
 
 #define USE_DBG				// enable to see raster costs
@@ -20,7 +20,7 @@
 
 // --------------
 .segmentdef Zeropage [start=$02, min=$02, max=$fb, virtual]
-.segmentdef Code [start=$2000, max=$cfff]
+.segmentdef Code [start=$2001, max=$cfff]
 .segmentdef Data [startAfter="Code", max=$cfff]
 
 .segmentdef MappedPixieWorkRam [start=$8000, max=$bfff, virtual]
@@ -43,6 +43,10 @@
 .const SCREEN_WIDTH = 256
 .const SCREEN_HEIGHT = 216
 
+// Maximum number of Pixie words use per row, 1 pixie is 2+ words (GOTOX + CHAR + [optional CHAR])
+//
+.const NUM_PIXIEWORDS = 96					// Must be < 128 (to keep indexing within range)
+
 .function FP(x) { .return (x * (1<<5)) }
 
 // ------------------------------------------------------------
@@ -52,14 +56,11 @@
 #import "layers_Functions.s"
 #import "layout_Functions.s"
 #import "assets_Functions.s"
+#import "pixie_Functions.s"
 
 // ------------------------------------------------------------
 // Layer constants
 //
-
-// Maximum number of Pixie words use per row, 1 pixie is 2+ words (GOTOX + CHAR + [optional CHAR])
-//
-.const NUM_PIXIEWORDS = 96					// Must be < 128 (to keep indexing within range)
 
 // ------------------------------------------------------------
 // Layer layout for credits screen example
@@ -152,9 +153,9 @@ SaveStateEnd:
 // Main
 //--------------------------------------------------------
 .segment Code
-
-* = $2000
-	jmp Entry
+BasicUpstart65(Main)
+* = $2016 "Basic Entry"
+Main: jmp Entry
 
 .print "--------"
 
@@ -169,20 +170,22 @@ SaveStateEnd:
 
 .print "--------"
 
-.const blobsBegin = StartSection("iffl", $00000, $40000)
-.const iffl0 = AddAsset("FS-IFFL0", "sdcard/data.bin.addr.mc")
+.const blobsBegin = StartSection("files", $00000, $400000)
+.const file0 = AddAsset("FILE0", "sdcard/data.bin")
 .const blobsEnd = EndSection()
 
 .print "--------"
 
-#import "layers_code.s"
 #import "layout_code.s"
 #import "assets_code.s"
+#import "layers_code.s"
 #import "system_code.s"
-#import "fastLoader.s"
-#import "decruncher.s"
+#import "loader.s"
 #import "keyb_code.s"
 #import "pixie_code.s"
+
+.segment Code "Decrunch"
+#import "decomp.s"
 
 // ------------------------------------------------------------
 //
@@ -228,13 +231,11 @@ Entry:
 	sta $d020
 
 	// initialise fast load (start drive motor)
-	jsr fl_init
+	jsr loader_init
 
-	LoadFile(bg0Chars.addr + iffl0.crunchAddress, iffl0.filenamePtr)
-	DecrunchFile(bg0Chars.addr + iffl0.crunchAddress, bg0Chars.addr)
+	Loader_LoadFile(bg0Chars.addr + file0.crunchAddress, file0.filenamePtr)
+	Decomp32(bg0Chars.addr + file0.crunchAddress, bg0Chars.addr)
 
-	// done loading. stop drive motor
-	jsr fl_exit
 	
 	// Update screen positioning if PAL/NTSC has changed
 	jsr System.CenterFrameHorizontally
@@ -265,6 +266,8 @@ Entry:
 		
 mainloop:
 	WaitVblank()
+
+	jsr System.UdpateScreenVisibility
 
 	DbgBord(4)
 

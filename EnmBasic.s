@@ -178,7 +178,7 @@ drwPlayBasic:
 	lda AnimFrame,y
 	sta DrawSChr
 
-	ldx #PIXIE_32x32
+	ldx #Pixie_32x32.id
 	jsr DrawPixie
 
 	rts

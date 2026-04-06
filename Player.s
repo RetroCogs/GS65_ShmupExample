@@ -438,7 +438,7 @@ drwPlay:
 	lda #8*2
 	sta DrawSChr
 
-	ldx #PIXIE_32x32
+	ldx #Pixie_32x32.id
 	jsr DrawPixie
 
 	rts
